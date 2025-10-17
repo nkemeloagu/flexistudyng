@@ -50,75 +50,15 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- Referral Link Variable & Gemini API Logic -->
+    <!-- Referral Link Variable -->
     <script>
         const REFERRAL_LINK = "https://www.miva.university/?ref=mivankemakolam10495";
-        const API_KEY = ""; // Placeholder for Gemini API Key
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
         
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.referral-link').forEach(link => {
                 link.href = REFERRAL_LINK;
             });
         });
-
-        async function findMyDegree() {
-            const userInput = document.getElementById('degree-input').value;
-            const resultsDiv = document.getElementById('matchmaker-results');
-            const loadingDiv = document.getElementById('matchmaker-loading');
-            
-            if (!userInput.trim()) {
-                resultsDiv.innerHTML = '<p class="text-cta-red">Please describe your background or career goal!</p>';
-                return;
-            }
-
-            resultsDiv.innerHTML = '';
-            loadingDiv.classList.remove('hidden');
-
-            const systemPrompt = "You are an expert, NUC-aware educational counselor for Miva Open University. Your task is to recommend the single most suitable Bachelor's or Master's degree program at Miva Open University based on the user's input (qualifications, career goals, or current job). Structure your answer in a persuasive, encouraging tone. Start the recommendation by naming the program in bold, followed by a brief, tailored justification (max 3 sentences). Do not use lists or bullet points. The final sentence must be a call-to-action encouraging the user to click the application link below.";
-            
-            const payload = {
-                contents: [{ parts: [{ text: `User's background/goal: ${userInput}` }] }],
-                tools: [{ "google_search": {} }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-                config: {
-                    maxOutputTokens: 250, 
-                }
-            };
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't find a recommendation right now. Please try again or check the programs list above!";
-                
-                resultsDiv.innerHTML = `
-                    <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-accent-teal">
-                        <h4 class="text-2xl font-bold text-gray-900 mb-3">Your Recommended Program:</h4>
-                        <p class="text-lg text-gray-700">${text}</p>
-                        <a href="${REFERRAL_LINK}" target="_blank" class="referral-link inline-block mt-4 text-sm font-semibold text-accent-teal hover:text-cta-red hover:underline">
-                            👉 Click here to apply for this recommended program now!
-                        </a>
-                    </div>
-                `;
-
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                resultsDiv.innerHTML = '<p class="text-cta-red">Recommendation service temporarily unavailable. Please review the program list above.</p>';
-            } finally {
-                loadingDiv.classList.add('hidden');
-            }
-        }
     </script>
 
     <!-- Header / Navbar (Simple, Mobile-Friendly) --><header class="bg-white shadow-md sticky top-0 z-10">
@@ -151,8 +91,6 @@
             <p class="mt-4 text-sm text-gray-400">Secure your acceptance in as little as 48 hours.</p>
         </div>
     </section>
-
-    <!-- 1.1. The Image Section was removed. -->
 
     <!-- 2. Core Value Proposition (3 Pillars of Flexibility) --><section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -257,32 +195,6 @@
              <!-- Final CTA Button --><a href="#" target="_blank" class="referral-link inline-block cta-button bg-cta-red text-white text-xl font-bold px-12 py-4 rounded-xl hover:bg-red-700 transition duration-300">
                 APPLY FREE VIA OUR PARTNER LINK
             </a>
-        </div>
-    </section>
-
-    <!-- 6. Degree Matchmaker (Gemini API Feature - Moved to the end) -->
-    <section class="py-16 bg-gray-100">
-        <div class="max-w-4xl mx-auto px-4">
-            <h3 class="text-3xl font-extrabold text-center mb-8 text-primary-blue flex items-center justify-center">
-                ✨ Degree Matchmaker: Find Your Perfect Program
-            </h3>
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl border border-gray-200">
-                <p class="text-gray-700 mb-4">Tell us about your background or career goal (e.g., "I have an HND in Electrical Engineering and want to switch to Data Science," or "I am a nurse looking to get my B.N.Sc.").</p>
-                <textarea id="degree-input" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-accent-teal focus:border-accent-teal mb-4" placeholder="Example: I work in banking but want a Master's degree to lead a team."></textarea>
-                
-                <button onclick="findMyDegree()" class="w-full bg-accent-teal text-white font-bold py-3 rounded-xl hover:bg-teal-700 transition duration-300 cta-button">
-                    Find My Best Miva Degree
-                </button>
-
-                <div id="matchmaker-loading" class="hidden text-center mt-6">
-                    <div class="loading-spinner w-8 h-8 border-4 border-gray-200 rounded-full mx-auto"></div>
-                    <p class="text-sm text-gray-600 mt-2">Consulting our educational expert...</p>
-                </div>
-
-                <div id="matchmaker-results" class="mt-6">
-                    <!-- LLM Recommendation will appear here -->
-                </div>
-            </div>
         </div>
     </section>
 
