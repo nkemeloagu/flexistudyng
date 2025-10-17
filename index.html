@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexi Study NG | Your Path to a Flexible, Accredited Degree</title>
+    <!-- Favicon: Graduation Cap Emoji -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Tailwind Configuration --><script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#0A192F', // Dark background for contrast
+                        'accent-teal': '#047878', // Teal/Blue-Green for branding
+                        'cta-red': '#EF4444',     // Bright Red for primary CTA/urgency
+                        'text-light': '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Ensures the whole page uses the Inter font for aesthetics */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6;
+        }
+        /* Style for the CTA button */
+        .cta-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+        }
+        .loading-spinner {
+            border-top-color: #EF4444;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Referral Link Variable & Gemini API Logic -->
+    <script>
+        const REFERRAL_LINK = "https://www.miva.university/?ref=mivankemakolam10495";
+        const API_KEY = ""; // Placeholder for Gemini API Key
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.referral-link').forEach(link => {
+                link.href = REFERRAL_LINK;
+            });
+        });
+
+        async function findMyDegree() {
+            const userInput = document.getElementById('degree-input').value;
+            const resultsDiv = document.getElementById('matchmaker-results');
+            const loadingDiv = document.getElementById('matchmaker-loading');
+            
+            if (!userInput.trim()) {
+                resultsDiv.innerHTML = '<p class="text-cta-red">Please describe your background or career goal!</p>';
+                return;
+            }
+
+            resultsDiv.innerHTML = '';
+            loadingDiv.classList.remove('hidden');
+
+            const systemPrompt = "You are an expert, NUC-aware educational counselor for Miva Open University. Your task is to recommend the single most suitable Bachelor's or Master's degree program at Miva Open University based on the user's input (qualifications, career goals, or current job). Structure your answer in a persuasive, encouraging tone. Start the recommendation by naming the program in bold, followed by a brief, tailored justification (max 3 sentences). Do not use lists or bullet points. The final sentence must be a call-to-action encouraging the user to click the application link below.";
+            
+            const payload = {
+                contents: [{ parts: [{ text: `User's background/goal: ${userInput}` }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+                config: {
+                    maxOutputTokens: 250, 
+                }
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't find a recommendation right now. Please try again or check the programs list above!";
+                
+                resultsDiv.innerHTML = `
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-accent-teal">
+                        <h4 class="text-2xl font-bold text-gray-900 mb-3">Your Recommended Program:</h4>
+                        <p class="text-lg text-gray-700">${text}</p>
+                        <a href="${REFERRAL_LINK}" target="_blank" class="referral-link inline-block mt-4 text-sm font-semibold text-accent-teal hover:text-cta-red hover:underline">
+                            👉 Click here to apply for this recommended program now!
+                        </a>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                resultsDiv.innerHTML = '<p class="text-cta-red">Recommendation service temporarily unavailable. Please review the program list above.</p>';
+            } finally {
+                loadingDiv.classList.add('hidden');
+            }
+        }
+    </script>
+
+    <!-- Header / Navbar (Simple, Mobile-Friendly) --><header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold text-accent-teal flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-cta-red" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z" clip-rule="evenodd" />
+                </svg>
+                Flexi Study <span class="text-gray-400 font-normal">NG</span>
+            </h1>
+            <a href="#" target="_blank" class="referral-link hidden sm:inline-block bg-cta-red text-text-light px-4 py-2 rounded-lg font-semibold hover:bg-red-700 cta-button">
+                APPLY FREE NOW
+            </a>
+        </div>
+    </header>
+
+    <!-- 1. Hero Section (High-Impact, Immediate CTA) --><section class="bg-primary-blue text-text-light py-16 md:py-24 shadow-xl">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-accent-teal text-lg font-semibold mb-2">NUC-Accredited | 100% Online | 48-Hour Admission</p>
+            <h2 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+                Start Your Degree at <span class="text-cta-red">MIVA OPEN UNIVERSITY</span> While You Work.
+            </h2>
+            <p class="text-xl mb-10 text-gray-300">
+                Flexi Study NG is your fast-track guide to Miva Open University—the flexible, affordable, and fully licensed path to a Bachelor's or Master's degree.
+            </p>
+
+            <!-- Primary CTA Button (High-Conversion) --><a href="#" target="_blank" class="referral-link inline-block cta-button bg-cta-red text-white text-xl font-bold px-12 py-4 rounded-xl hover:bg-red-700 transition duration-300 transform scale-105">
+                APPLY FREE NOW (Zero Application Fee!)
+            </a>
+            <p class="mt-4 text-sm text-gray-400">Secure your acceptance in as little as 48 hours.</p>
+        </div>
+    </section>
+
+    <!-- 1.1. The Image Section was removed. -->
+
+    <!-- 2. Core Value Proposition (3 Pillars of Flexibility) --><section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-3xl font-bold text-center mb-12 text-gray-900">The Flexi Study NG Advantage</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                <!-- Value 1: Speed --><div class="bg-gray-50 p-6 rounded-xl shadow-lg border-t-4 border-cta-red">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cta-red mb-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z" clip-rule="evenodd" />
+                    </svg>
+                    <h4 class="text-xl font-semibold mb-2 text-gray-900">Admission in 48 Hours</h4>
+                    <p class="text-gray-600">No waiting months for acceptance letters. Miva's streamlined online process means you get an answer and start your enrollment fast.</p>
+                </div>
+
+                <!-- Value 2: Flexibility --><div class="bg-gray-50 p-6 rounded-xl shadow-lg border-t-4 border-accent-teal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-accent-teal mb-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707l-.707-.707V8a6 6 0 00-6-6zM10 18a3 3 0 110-6 3 3 0 010 6z" />
+                    </svg>
+                    <h4 class="text-xl font-semibold mb-2 text-gray-900">Study Anywhere, Anytime</h4>
+                    <p class="text-gray-600">The 100% online model lets you balance work, family, and studies. Log in to your classes on your schedule, from any location.</p>
+                </div>
+
+                <!-- Value 3: Accreditation & Value --><div class="bg-gray-50 p-6 rounded-xl shadow-lg border-t-4 border-cta-red">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cta-red mb-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                    </svg>
+                    <h4 class="text-xl font-semibold mb-2 text-gray-900">NUC Licensed & Trusted</h4>
+                    <p class="text-gray-600">Miva Open University is licensed by the National Universities Commission (NUC). Your degree is fully accredited and recognized in Nigeria and globally.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Direct Entry / HND Fast Track Section (High-Value Audience) --><section class="py-16 bg-accent-teal text-text-light">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h3 class="text-3xl sm:text-4xl font-extrabold mb-4">HND Holders: Fast-Track Your B.Sc. in Just 4 Semesters at Miva!</h3>
+            <p class="text-xl mb-8 opacity-90">
+                Don't waste time on long conversion programs. Your HND, OND, or relevant NCE qualifies you for Direct Entry into high-demand undergraduate programs at Miva Open University.
+            </p>
+             <!-- Secondary CTA Button (HND/DE Focus) --><a href="#" target="_blank" class="referral-link inline-block cta-button bg-cta-red text-white text-lg font-bold px-10 py-4 rounded-xl hover:bg-red-700 transition duration-300">
+                Click to Start Your Direct Entry Application
+            </a>
+            <p class="mt-4 text-sm text-gray-300">Convert your qualification to a B.Sc. with ease.</p>
+        </div>
+    </section>
+
+    <!-- 4. Program Spotlight (What they can study) --><section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-3xl font-bold text-center mb-12 text-gray-900">Program List: Career-Focused Degrees</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Card 1: School of Computing --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-accent-teal">
+                    <h4 class="text-xl font-bold mb-2 text-accent-teal">School of Computing</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>B.Sc. Computer Science</li>
+                        <li>B.Sc. Cybersecurity</li>
+                        <li>B.Sc. Data Science</li>
+                        <li>B.Sc. Software Engineering</li>
+                        <li>B.Sc. Information Technology</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: School of Management and Social Sciences --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-cta-red">
+                    <h4 class="text-xl font-bold mb-2 text-cta-red">School of Management & Social Sciences</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>B.Sc. Business Management</li>
+                        <li>B.Sc. Economics</li>
+                        <li>B.Sc. Accounting</li>
+                        <li>B.Sc. Public Policy and Administration</li>
+                        <li>B.Sc. Entrepreneurship</li>
+                        <li>B.Sc. Criminology and Security Studies</li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Communication and Allied Health --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-accent-teal">
+                    <h4 class="text-xl font-bold mb-2 text-accent-teal">Communication and Allied Health</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>B.N.Sc. Nursing Science</li>
+                        <li>B.Sc. Public Health</li>
+                        <li>B.Sc. Mass Communication and Media Studies</li>
+                    </ul>
+                </div>
+
+                <!-- Card 4: Masters --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-cta-red">
+                    <h4 class="text-xl font-bold mb-2 text-cta-red">Postgraduate Degrees</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Master of Business Administration (MBA)</li>
+                        <li>Master of Public Administration (MPA)</li>
+                        <li>Master of Information Technology (MIT)</li>
+                        <li>Master of Public Health (MPH)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Final CTA Strip --><section class="bg-primary-blue py-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+             <h4 class="text-3xl font-extrabold text-text-light mb-4">Ready to Gain Admission to Miva Open University?</h4>
+             <p class="text-xl text-gray-300 mb-6">Your NUC-accredited online degree is just a click away. Zero risk, maximum career reward.</p>
+             <!-- Final CTA Button --><a href="#" target="_blank" class="referral-link inline-block cta-button bg-cta-red text-white text-xl font-bold px-12 py-4 rounded-xl hover:bg-red-700 transition duration-300">
+                APPLY FREE VIA OUR PARTNER LINK
+            </a>
+        </div>
+    </section>
+
+    <!-- 6. Degree Matchmaker (Gemini API Feature - Moved to the end) -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-4xl mx-auto px-4">
+            <h3 class="text-3xl font-extrabold text-center mb-8 text-primary-blue flex items-center justify-center">
+                ✨ Degree Matchmaker: Find Your Perfect Program
+            </h3>
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl border border-gray-200">
+                <p class="text-gray-700 mb-4">Tell us about your background or career goal (e.g., "I have an HND in Electrical Engineering and want to switch to Data Science," or "I am a nurse looking to get my B.N.Sc.").</p>
+                <textarea id="degree-input" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-accent-teal focus:border-accent-teal mb-4" placeholder="Example: I work in banking but want a Master's degree to lead a team."></textarea>
+                
+                <button onclick="findMyDegree()" class="w-full bg-accent-teal text-white font-bold py-3 rounded-xl hover:bg-teal-700 transition duration-300 cta-button">
+                    Find My Best Miva Degree
+                </button>
+
+                <div id="matchmaker-loading" class="hidden text-center mt-6">
+                    <div class="loading-spinner w-8 h-8 border-4 border-gray-200 rounded-full mx-auto"></div>
+                    <p class="text-sm text-gray-600 mt-2">Consulting our educational expert...</p>
+                </div>
+
+                <div id="matchmaker-results" class="mt-6">
+                    <!-- LLM Recommendation will appear here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 7. Footer (Compliance & Contact) --><footer class="bg-gray-800 text-gray-300 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <div class="mb-4">
+                <p>© 2025 Flexi Study NG. All Rights Reserved.</p>
+                <p class="mt-2">
+                    Email: flexistudyng@outlook.com | 
+                    WhatsApp: <a href="https://wa.link/2urv0k" target="_blank" class="text-accent-teal hover:underline">https://wa.link/2urv0k</a>
+                </p>
+            </div>
+
+            <!-- MANDATORY COMPLIANCE DISCLAIMER --><div class="border-t border-gray-700 pt-4">
+                <p class="font-bold text-lg text-cta-red mb-2">IMPORTANT DISCLAIMER</p>
+                <p class="text-xs text-gray-400">
+                    Flexi Study NG is an independent educational guide and referral partner for Miva Open University. We are not the official website or a direct representative of Miva Open University. All official program details, policies, and tuition fees are set by Miva Open University and are subject to change. This page is designed to simplify your application process using our authorized partner link.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
