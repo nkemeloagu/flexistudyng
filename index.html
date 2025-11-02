@@ -1,20 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KRDB6BD1TR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-KRDB6BD1TR');
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flexi Study NG | Your Path to a Flexible, Accredited Degree</title>
-    <!-- Favicon: Graduation Cap Emoji -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
+    <!-- Favicon: Graduation Cap Emoji --><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
     <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom Tailwind Configuration --><script>
         tailwind.config = {
@@ -59,14 +49,75 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- Referral Link Variable -->
-    <script>
+    <!-- Global Scripts and Referral Link Variable --><script>
         const REFERRAL_LINK = "https://www.miva.university/?ref=mivankemakolam10495";
         
+        const IMAGE_URLS = [
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/485351248_17962200179897740_7502166392492433651_n.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/Transfer%20to%20MIVA.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/MIVA.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/564192622_784288134451969_2384948815232542955_n.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/565354822_784288171118632_8137217613126572932_n.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/564595531_784288194451963_8259079864692475803_n.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/Apply%20for%20direct%20entry.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/HR.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/Applications.jpg",
+            "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/Direct%20entry.jpg"
+        ];
+
+        let currentSlide = 0;
+
+        function setupCarousel() {
+            const carouselContainer = document.getElementById('image-carousel');
+            if (!carouselContainer) return;
+
+            // 1. Create and stack all images
+            IMAGE_URLS.forEach((url, index) => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = `Miva Open University Success Image ${index + 1}`;
+                // Use absolute positioning and transition for smooth fading
+                // Changed object-cover to object-contain to prevent cropping
+                img.className = `absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-1000 ease-in-out rounded-xl`;
+                img.style.opacity = '0'; // Start hidden
+                img.style.zIndex = index === 0 ? '10' : '5'; // Keep the first one on top initially
+                carouselContainer.appendChild(img);
+            });
+
+            const slides = carouselContainer.querySelectorAll('img');
+
+            // 2. The transition logic
+            function showNextSlide() {
+                // Hide current slide
+                slides[currentSlide].style.opacity = '0';
+                
+                // Calculate next slide index
+                currentSlide = (currentSlide + 1) % slides.length;
+                
+                // Show next slide
+                slides[currentSlide].style.opacity = '1';
+                
+                // Re-order z-index to ensure the fading slide doesn't block the next one
+                slides.forEach((slide, index) => {
+                    slide.style.zIndex = (index === currentSlide) ? '10' : '5';
+                });
+            }
+
+            // Initial display
+            slides[currentSlide].style.opacity = '1';
+
+            // 3. Start the timer
+            setInterval(showNextSlide, 5000); // Change image every 5 seconds
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Apply referral link to all CTA buttons
             document.querySelectorAll('.referral-link').forEach(link => {
                 link.href = REFERRAL_LINK;
             });
+            
+            // Setup the carousel once the DOM is ready
+            setupCarousel();
         });
     </script>
 
@@ -100,7 +151,7 @@
             <p class="mt-4 text-sm text-gray-400">Secure your acceptance in as little as 48 hours.</p>
         </div>
     </section>
-
+    
     <!-- 2. Core Value Proposition (3 Pillars of Flexibility) --><section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h3 class="text-3xl font-bold text-center mb-12 text-gray-900">The Flexi Study NG Advantage</h3>
@@ -134,7 +185,17 @@
         </div>
     </section>
 
-    <!-- 3. Direct Entry / HND Fast Track Section (High-Value Audience) --><section class="py-16 bg-accent-teal text-text-light">
+    <!-- 3. Image Carousel/Slider Section (New - Fully Clickable) --><section class="py-12 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-2xl font-bold text-center mb-6 text-gray-900">See Your Future at Miva Open University</h3>
+            <!-- Carousel Container: Set a fixed height for responsiveness and click action --><div id="image-carousel" class="relative w-full h-[300px] md:h-[450px] lg:h-[500px] overflow-hidden rounded-xl shadow-2xl cursor-pointer bg-white" 
+                 onclick="window.open(REFERRAL_LINK, '_blank')">
+                <!-- Images are dynamically injected and managed by JS for the fading transition --></div>
+            <p class="text-center text-lg text-gray-500 font-semibold mt-4">Click any image to start your free application!</p>
+        </div>
+    </section>
+
+    <!-- 4. Direct Entry / HND Fast Track Section (High-Value Audience) --><section class="py-16 bg-accent-teal text-text-light">
         <div class="max-w-4xl mx-auto px-4 text-center">
             <h3 class="text-3xl sm:text-4xl font-extrabold mb-4">HND Holders: Fast-Track Your B.Sc. in Just 4 Semesters at Miva!</h3>
             <p class="text-xl mb-8 opacity-90">
@@ -147,7 +208,7 @@
         </div>
     </section>
 
-    <!-- 4. Program Spotlight (What they can study) --><section class="py-16 bg-white">
+    <!-- 5. Program Spotlight (What they can study) --><section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h3 class="text-3xl font-bold text-center mb-12 text-gray-900">Program List: Career-Focused Degrees</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -197,7 +258,7 @@
         </div>
     </section>
 
-    <!-- 5. Final CTA Strip --><section class="bg-primary-blue py-12">
+    <!-- 6. Final CTA Strip --><section class="bg-primary-blue py-12">
         <div class="max-w-4xl mx-auto px-4 text-center">
              <h4 class="text-3xl font-extrabold text-text-light mb-4">Ready to Gain Admission to Miva Open University?</h4>
              <p class="text-xl text-gray-300 mb-6">Your NUC-accredited online degree is just a click away. Zero risk, maximum career reward.</p>
