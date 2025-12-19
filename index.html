@@ -1,20 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KRDB6BD1TR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KRDB6BD1TR');
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flexi Study NG | Your Path to a Flexible, Accredited Degree</title>
-    <!-- Favicon: Graduation Cap Emoji --><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
-    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom Tailwind Configuration --><script>
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'primary-blue': '#0A192F', // Dark background for contrast
-                        'accent-teal': '#047878', // Teal/Blue-Green for branding
-                        'cta-red': '#EF4444',     // Bright Red for primary CTA/urgency
-                        'text-light': '#F8FAFC',
+                        'primary': '#0A192F', 
+                        'secondary': '#047878',
+                        'accent': '#EF4444',
+                        'soft-bg': '#F8FAFC',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -24,35 +39,33 @@
         }
     </script>
     <style>
-        /* Ensures the whole page uses the Inter font for aesthetics */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F3F4F6;
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #112240, #0A192F);
         }
-        /* Style for the CTA button */
-        .cta-button {
+        .cta-glow {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
         }
-        .cta-button:hover {
+        .cta-glow:hover {
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
         }
-        .loading-spinner {
-            border-top-color: #EF4444;
-            animation: spin 1s ease-in-out infinite;
+        .program-card:hover {
+            transform: translateY(-5px);
+            border-color: #047878;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-soft-bg text-gray-900 overflow-x-hidden">
 
-    <!-- Global Scripts and Referral Link Variable --><script>
+    <!-- Referral Logic -->
+    <script>
         const REFERRAL_LINK = "https://www.miva.university/?ref=mivankemakolam10495";
-        
-        const IMAGE_URLS = [
+        const SUCCESS_IMAGES = [
             "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/485351248_17962200179897740_7502166392492433651_n.jpg",
             "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/Transfer%20to%20MIVA.jpg",
             "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/MIVA.jpg",
@@ -65,225 +78,329 @@
             "https://ik.imagekit.io/vgflfdcic/Flexi%20Study/Direct%20entry.jpg"
         ];
 
-        let currentSlide = 0;
-
-        function setupCarousel() {
-            const carouselContainer = document.getElementById('image-carousel');
-            if (!carouselContainer) return;
-
-            // 1. Create and stack all images
-            IMAGE_URLS.forEach((url, index) => {
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = `Miva Open University Success Image ${index + 1}`;
-                // Use absolute positioning and transition for smooth fading
-                // Changed object-cover to object-contain to prevent cropping
-                img.className = `absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-1000 ease-in-out rounded-xl`;
-                img.style.opacity = '0'; // Start hidden
-                img.style.zIndex = index === 0 ? '10' : '5'; // Keep the first one on top initially
-                carouselContainer.appendChild(img);
-            });
-
-            const slides = carouselContainer.querySelectorAll('img');
-
-            // 2. The transition logic
-            function showNextSlide() {
-                // Hide current slide
-                slides[currentSlide].style.opacity = '0';
-                
-                // Calculate next slide index
-                currentSlide = (currentSlide + 1) % slides.length;
-                
-                // Show next slide
-                slides[currentSlide].style.opacity = '1';
-                
-                // Re-order z-index to ensure the fading slide doesn't block the next one
-                slides.forEach((slide, index) => {
-                    slide.style.zIndex = (index === currentSlide) ? '10' : '5';
-                });
-            }
-
-            // Initial display
-            slides[currentSlide].style.opacity = '1';
-
-            // 3. Start the timer
-            setInterval(showNextSlide, 5000); // Change image every 5 seconds
+        let currentImg = 0;
+        function rotateCarousel() {
+            const container = document.getElementById('carousel-inner');
+            if (!container) return;
+            const images = container.getElementsByTagName('img');
+            images[currentImg].style.opacity = '0';
+            currentImg = (currentImg + 1) % images.length;
+            images[currentImg].style.opacity = '1';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Apply referral link to all CTA buttons
-            document.querySelectorAll('.referral-link').forEach(link => {
-                link.href = REFERRAL_LINK;
-            });
+            document.querySelectorAll('.referral-link').forEach(link => link.href = REFERRAL_LINK);
             
-            // Setup the carousel once the DOM is ready
-            setupCarousel();
+            const container = document.getElementById('carousel-inner');
+            SUCCESS_IMAGES.forEach((src, idx) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = "absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ease-in-out";
+                img.style.opacity = idx === 0 ? '1' : '0';
+                container.appendChild(img);
+            });
+            setInterval(rotateCarousel, 4000);
         });
     </script>
 
-    <!-- Header / Navbar (Simple, Mobile-Friendly) --><header class="bg-white shadow-md sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <h1 class="text-2xl font-extrabold text-accent-teal flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-cta-red" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z" clip-rule="evenodd" />
-                </svg>
-                Flexi Study <span class="text-gray-400 font-normal">NG</span>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-secondary p-1.5 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    </svg>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-primary">Flexi Study <span class="text-secondary">NG</span></span>
+            </div>
+            <a href="#" target="_blank" class="referral-link bg-accent text-white px-5 py-2 rounded-full font-bold text-sm cta-glow">APPLY FREE</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white pt-20 pb-32 px-4 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                <path fill="#047878" d="M44.7,-76.4C58.1,-69.2,69.2,-58.1,77.4,-44.7C85.5,-31.3,90.8,-15.6,91,0.1C91.1,15.8,86.1,31.7,77.5,45.2C68.9,58.8,56.7,70.1,42.5,77.3C28.3,84.5,12.1,87.6,-3.6,93.9C-19.3,100.1,-34.5,109.4,-47.1,106.1C-59.8,102.8,-69.8,86.9,-77.2,71.5C-84.5,56.1,-89.2,41.2,-91.7,26.1C-94.2,11.1,-94.5,-4.1,-90.4,-18.3C-86.4,-32.5,-77.9,-45.8,-66.6,-55C-55.3,-64.1,-41.2,-69.1,-27.8,-76.3C-14.4,-83.5,-1.7,-92.9,13.2,-94.5C28.1,-96.2,41.2,-83.5,44.7,-76.4Z" transform="translate(180 20)" />
+            </svg>
+        </div>
+        
+        <div class="max-w-5xl mx-auto text-center relative z-10 animate-fade-in">
+            <div class="inline-block bg-secondary/20 border border-secondary/30 text-secondary px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+                ✨ NUC Accredited
+            </div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-8">
+                Your Degree, <span class="text-accent">On Your Terms</span>.
             </h1>
-            <a href="#" target="_blank" class="referral-link hidden sm:inline-block bg-cta-red text-text-light px-4 py-2 rounded-lg font-semibold hover:bg-red-700 cta-button">
-                APPLY FREE NOW
-            </a>
-        </div>
-    </header>
-
-    <!-- 1. Hero Section (High-Impact, Immediate CTA) --><section class="bg-primary-blue text-text-light py-16 md:py-24 shadow-xl">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <p class="text-accent-teal text-lg font-semibold mb-2">NUC-Accredited | 100% Online | 48-Hour Admission</p>
-            <h2 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-6">
-                Start Your Degree at <span class="text-cta-red">MIVA OPEN UNIVERSITY</span> While You Work.
-            </h2>
-            <p class="text-xl mb-10 text-gray-300">
-                Flexi Study NG is your fast-track guide to Miva Open University—the flexible, affordable, and fully licensed path to a Bachelor's or Master's degree.
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Join Miva Open University through Flexi Study NG. Get a high-quality, flexible education that fits your busy schedule. No JAMB required for most programs.
             </p>
-
-            <!-- Primary CTA Button (High-Conversion) --><a href="#" target="_blank" class="referral-link inline-block cta-button bg-cta-red text-white text-xl font-bold px-12 py-4 rounded-xl hover:bg-red-700 transition duration-300 transform scale-105">
-                APPLY FREE NOW (Zero Application Fee!)
-            </a>
-            <p class="mt-4 text-sm text-gray-400">Secure your acceptance in as little as 48 hours.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#" target="_blank" class="referral-link w-full sm:w-auto bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg cta-glow">
+                    Start Application (Free)
+                </a>
+                <a href="https://wa.link/2urv0k" target="_blank" class="w-full sm:w-auto border border-gray-600 hover:bg-white/5 text-white px-8 py-4 rounded-xl font-bold text-lg transition">
+                    Chat with an Advisor
+                </a>
+            </div>
+            <p class="mt-6 text-sm text-gray-400">Join 10,000+ students already learning online.</p>
         </div>
     </section>
-    
-    <!-- 2. Core Value Proposition (3 Pillars of Flexibility) --><section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 class="text-3xl font-bold text-center mb-12 text-gray-900">The Flexi Study NG Advantage</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                <!-- Value 1: Speed --><div class="bg-gray-50 p-6 rounded-xl shadow-lg border-t-4 border-cta-red">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cta-red mb-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z" clip-rule="evenodd" />
-                    </svg>
-                    <h4 class="text-xl font-semibold mb-2 text-gray-900">Admission in 48 Hours</h4>
-                    <p class="text-gray-600">No waiting months for acceptance letters. Miva's streamlined online process means you get an answer and start your enrollment fast.</p>
+    <!-- Stats / Trust Bar -->
+    <div class="max-w-6xl mx-auto px-4 -mt-16 relative z-20">
+        <div class="bg-white rounded-2xl shadow-xl p-8 grid grid-cols-2 md:grid-cols-4 gap-8 border border-gray-100">
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary">48h</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Admission Letter</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary">100%</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Online Classes</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary">NUC</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Accredited</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary">24/7</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Student Support</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="py-24 max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-primary mb-4">Why Choose Miva via Flexi Study NG?</h2>
+            <div class="h-1 w-20 bg-secondary mx-auto"></div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 </div>
-
-                <!-- Value 2: Flexibility --><div class="bg-gray-50 p-6 rounded-xl shadow-lg border-t-4 border-accent-teal">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-accent-teal mb-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707l-.707-.707V8a6 6 0 00-6-6zM10 18a3 3 0 110-6 3 3 0 010 6z" />
-                    </svg>
-                    <h4 class="text-xl font-semibold mb-2 text-gray-900">Study Anywhere, Anytime</h4>
-                    <p class="text-gray-600">The 100% online model lets you balance work, family, and studies. Log in to your classes on your schedule, from any location.</p>
+                <h3 class="text-xl font-bold mb-3">Fast-Track Entry</h3>
+                <p class="text-gray-600 leading-relaxed">Skip the long JAMB queues. Apply and receive your admission letter in just 2 days. Start your future today.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                <div class="w-12 h-12 bg-accent/10 text-accent rounded-lg flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-
-                <!-- Value 3: Accreditation & Value --><div class="bg-gray-50 p-6 rounded-xl shadow-lg border-t-4 border-cta-red">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cta-red mb-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                    </svg>
-                    <h4 class="text-xl font-semibold mb-2 text-gray-900">NUC Licensed & Trusted</h4>
-                    <p class="text-gray-600">Miva Open University is licensed by the National Universities Commission (NUC). Your degree is fully accredited and recognized in Nigeria and globally.</p>
+                <h3 class="text-xl font-bold mb-3">True Flexibility</h3>
+                <p class="text-gray-600 leading-relaxed">Keep your job while you study. Our LMS is available on mobile and desktop, allowing you to learn during lunch breaks or evenings.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 </div>
-
+                <h3 class="text-xl font-bold mb-3">Global Recognition</h3>
+                <p class="text-gray-600 leading-relaxed">Graduate with a degree that is recognized by the NUC and employers worldwide.</p>
             </div>
         </div>
     </section>
 
-    <!-- 3. Image Carousel/Slider Section (New - Fully Clickable) --><section class="py-12 bg-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 class="text-2xl font-bold text-center mb-6 text-gray-900">See Your Future at Miva Open University</h3>
-            <!-- Carousel Container: Set a fixed height for responsiveness and click action --><div id="image-carousel" class="relative w-full h-[300px] md:h-[450px] lg:h-[500px] overflow-hidden rounded-xl shadow-2xl cursor-pointer bg-white" 
-                 onclick="window.open(REFERRAL_LINK, '_blank')">
-                <!-- Images are dynamically injected and managed by JS for the fading transition --></div>
-            <p class="text-center text-lg text-gray-500 font-semibold mt-4">Click any image to start your free application!</p>
+    <!-- Success Carousel Section -->
+    <section class="py-20 bg-primary overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2 text-white">
+                <h2 class="text-3xl font-bold mb-6">Our Community in Action</h2>
+                <p class="text-gray-400 mb-8 leading-relaxed">From orientation to graduation, Miva Open University is where ambition meets opportunity. See why thousands of Nigerians are choosing the flexible way to learn.</p>
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="flex -space-x-2">
+                        <div class="w-10 h-10 rounded-full border-2 border-primary bg-gray-600 flex items-center justify-center text-xs font-bold">NK</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-primary bg-secondary flex items-center justify-center text-xs font-bold">FS</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-primary bg-accent flex items-center justify-center text-xs font-bold">+</div>
+                    </div>
+                    <span class="text-sm font-medium text-gray-300">Join the Flexi Study family</span>
+                </div>
+                <a href="#" target="_blank" class="referral-link inline-block bg-white text-primary px-8 py-3 rounded-xl font-bold hover:bg-gray-200 transition">View Success Stories</a>
+            </div>
+            <div class="md:w-1/2 w-full h-[400px] bg-white/5 rounded-3xl relative overflow-hidden ring-1 ring-white/10 p-4">
+                <div id="carousel-inner" class="relative w-full h-full rounded-2xl overflow-hidden cursor-pointer" onclick="window.open(REFERRAL_LINK, '_blank')">
+                    <!-- Images injected via JS -->
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- 4. Direct Entry / HND Fast Track Section (High-Value Audience) --><section class="py-16 bg-accent-teal text-text-light">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h3 class="text-3xl sm:text-4xl font-extrabold mb-4">HND Holders: Fast-Track Your B.Sc. in Just 4 Semesters at Miva!</h3>
-            <p class="text-xl mb-8 opacity-90">
-                Don't waste time on long conversion programs. Your HND, OND, or relevant NCE qualifies you for Direct Entry into high-demand undergraduate programs at Miva Open University.
+    <!-- Programs Grid -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+                <div class="max-w-xl">
+                    <h2 class="text-3xl font-bold text-primary mb-4">NUC-Accredited Programs</h2>
+                    <p class="text-gray-600">Explore our wide range of undergraduate and postgraduate courses designed for the modern workplace.</p>
+                </div>
+                <a href="#" target="_blank" class="referral-link text-secondary font-bold flex items-center group">
+                    View Full Catalog 
+                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Computing -->
+                <div class="program-card bg-soft-bg p-6 rounded-2xl border-2 border-transparent transition-all">
+                    <h4 class="font-bold text-secondary mb-4 uppercase text-xs tracking-widest">School of Computing</h4>
+                    <ul class="space-y-3 font-medium text-gray-700">
+                        <li class="flex items-start">
+                            <span class="text-secondary mr-2">•</span> Computer Science
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-secondary mr-2">•</span> Cybersecurity
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-secondary mr-2">•</span> Data Science
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-secondary mr-2">•</span> Software Engineering
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Management -->
+                <div class="program-card bg-soft-bg p-6 rounded-2xl border-2 border-transparent transition-all">
+                    <h4 class="font-bold text-accent mb-4 uppercase text-xs tracking-widest">Management & Social</h4>
+                    <ul class="space-y-3 font-medium text-gray-700">
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> Business Mgmt</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> Economics</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> Accounting</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> Public Admin</li>
+                    </ul>
+                </div>
+
+                <!-- Health -->
+                <div class="program-card bg-soft-bg p-6 rounded-2xl border-2 border-transparent transition-all">
+                    <h4 class="font-bold text-secondary mb-4 uppercase text-xs tracking-widest">Allied Health</h4>
+                    <ul class="space-y-3 font-medium text-gray-700">
+                        <li class="flex items-start"><span class="text-secondary mr-2">•</span> Nursing Science</li>
+                        <li class="flex items-start"><span class="text-secondary mr-2">•</span> Public Health</li>
+                        <li class="flex items-start"><span class="text-secondary mr-2">•</span> Mass Comm</li>
+                    </ul>
+                </div>
+
+                <!-- Masters -->
+                <div class="program-card bg-soft-bg p-6 rounded-2xl border-2 border-transparent transition-all">
+                    <h4 class="font-bold text-accent mb-4 uppercase text-xs tracking-widest">Postgraduate</h4>
+                    <ul class="space-y-3 font-medium text-gray-700">
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> MBA</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> MPA</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> Master in IT</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span> Public Health (MPH)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HND Fast Track -->
+    <section class="py-20 bg-accent text-white relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Convert your HND to a B.Sc in 2 Years</h2>
+            <p class="text-lg opacity-90 mb-10 leading-relaxed">
+                Direct Entry admission for HND, OND, and NCE holders. Don't let your current qualification be your final stop. Fast-track your career with Miva.
             </p>
-             <!-- Secondary CTA Button (HND/DE Focus) --><a href="#" target="_blank" class="referral-link inline-block cta-button bg-cta-red text-white text-lg font-bold px-10 py-4 rounded-xl hover:bg-red-700 transition duration-300">
-                Click to Start Your Direct Entry Application
+            <a href="#" target="_blank" class="referral-link inline-block bg-white text-accent px-10 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition shadow-lg">
+                Start HND Conversion Now
             </a>
-            <p class="mt-4 text-sm text-gray-300">Convert your qualification to a B.Sc. with ease.</p>
         </div>
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
     </section>
 
-    <!-- 5. Program Spotlight (What they can study) --><section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 class="text-3xl font-bold text-center mb-12 text-gray-900">Program List: Career-Focused Degrees</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- FAQ Section -->
+    <section class="py-24 max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-primary">Frequently Asked Questions</h2>
+        <div class="grid md:grid-cols-1 gap-4">
+            <details class="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md">
+                <summary class="flex justify-between items-center cursor-pointer font-bold text-primary list-none">
+                    Is Miva licensed/accredited by the NUC?
+                    <span class="text-secondary group-open:rotate-180 transition text-2xl">+</span>
+                </summary>
+                <p class="mt-4 text-gray-600 leading-relaxed border-t pt-4">Miva Open University is a degree-awarding online university, recognised and licensed by the National Universities Commission (NUC). Rest assured, our programmes adhere to rigorous standards of academic excellence and quality.</p>
+            </details>
 
-                <!-- Card 1: School of Computing --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-accent-teal">
-                    <h4 class="text-xl font-bold mb-2 text-accent-teal">School of Computing</h4>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>B.Sc. Computer Science</li>
-                        <li>B.Sc. Cybersecurity</li>
-                        <li>B.Sc. Data Science</li>
-                        <li>B.Sc. Software Engineering</li>
-                        <li>B.Sc. Information Technology</li>
-                    </ul>
-                </div>
+            <details class="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md">
+                <summary class="flex justify-between items-center cursor-pointer font-bold text-primary list-none">
+                    Am I required to take JAMB/UTME?
+                    <span class="text-secondary group-open:rotate-180 transition text-2xl">+</span>
+                </summary>
+                <p class="mt-4 text-gray-600 leading-relaxed border-t pt-4">No, you don't need to take JAMB/UTME. You only need WAEC, NECO, GCE, or NABTEB. The result must include a minimum of five credits in the course-relevant subjects (including English and Mathematics) in not more than two sittings.</p>
+            </details>
 
-                <!-- Card 2: School of Management and Social Sciences --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-cta-red">
-                    <h4 class="text-xl font-bold mb-2 text-cta-red">School of Management & Social Sciences</h4>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>B.Sc. Business Management</li>
-                        <li>B.Sc. Economics</li>
-                        <li>B.Sc. Accounting</li>
-                        <li>B.Sc. Public Policy and Administration</li>
-                        <li>B.Sc. Entrepreneurship</li>
-                        <li>B.Sc. Criminology and Security Studies</li>
-                    </ul>
-                </div>
+            <details class="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md">
+                <summary class="flex justify-between items-center cursor-pointer font-bold text-primary list-none">
+                    How much is Miva's tuition fee?
+                    <span class="text-secondary group-open:rotate-180 transition text-2xl">+</span>
+                </summary>
+                <p class="mt-4 text-gray-600 leading-relaxed border-t pt-4">Tuition fees start at just 350,000 Naira per year. We also provide flexible payment plans to ensure that financing your education is convenient and manageable.</p>
+            </details>
 
-                <!-- Card 3: Communication and Allied Health --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-accent-teal">
-                    <h4 class="text-xl font-bold mb-2 text-accent-teal">Communication and Allied Health</h4>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>B.N.Sc. Nursing Science</li>
-                        <li>B.Sc. Public Health</li>
-                        <li>B.Sc. Mass Communication and Media Studies</li>
-                    </ul>
-                </div>
+            <details class="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md">
+                <summary class="flex justify-between items-center cursor-pointer font-bold text-primary list-none">
+                    How do the online classes work?
+                    <span class="text-secondary group-open:rotate-180 transition text-2xl">+</span>
+                </summary>
+                <p class="mt-4 text-gray-600 leading-relaxed border-t pt-4">You will learn in a virtual classroom using Miva Open University's learning management system (LMS). You can access pre-recorded content at your convenience and engage in real-time activities with other learners and teachers.</p>
+            </details>
 
-                <!-- Card 4: Masters --><div class="p-5 bg-gray-50 rounded-xl shadow hover:shadow-xl transition duration-300 border-b-4 border-cta-red">
-                    <h4 class="text-xl font-bold mb-2 text-cta-red">Postgraduate Degrees</h4>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>Master of Business Administration (MBA)</li>
-                        <li>Master of Public Administration (MPA)</li>
-                        <li>Master of Information Technology (MIT)</li>
-                        <li>Master of Public Health (MPH)</li>
-                    </ul>
-                </div>
-            </div>
+            <details class="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md">
+                <summary class="flex justify-between items-center cursor-pointer font-bold text-primary list-none">
+                    How long does it take to earn a degree?
+                    <span class="text-secondary group-open:rotate-180 transition text-2xl">+</span>
+                </summary>
+                <p class="mt-4 text-gray-600 leading-relaxed border-t pt-4">The standard duration is four (4) years, which is the same as earning a degree through traditional, in-person education. Direct entry and HND conversion paths are shorter (typically 2 years).</p>
+            </details>
         </div>
-    </section>
-
-    <!-- 6. Final CTA Strip --><section class="bg-primary-blue py-12">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-             <h4 class="text-3xl font-extrabold text-text-light mb-4">Ready to Gain Admission to Miva Open University?</h4>
-             <p class="text-xl text-gray-300 mb-6">Your NUC-accredited online degree is just a click away. Zero risk, maximum career reward.</p>
-             <!-- Final CTA Button --><a href="#" target="_blank" class="referral-link inline-block cta-button bg-cta-red text-white text-xl font-bold px-12 py-4 rounded-xl hover:bg-red-700 transition duration-300">
-                APPLY FREE VIA OUR PARTNER LINK
+        <div class="mt-12 text-center">
+            <p class="text-gray-500 mb-6 font-medium">Have more questions? We are here to help!</p>
+            <a href="https://wa.link/2urv0k" target="_blank" class="inline-flex items-center text-secondary font-bold hover:underline">
+                Ask an advisor on WhatsApp 
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
         </div>
     </section>
 
-
-    <!-- 7. Footer (Compliance & Contact) --><footer class="bg-gray-800 text-gray-300 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <div class="mb-4">
-                <p>© 2025 Flexi Study NG. All Rights Reserved.</p>
-                <p class="mt-2">
-                    Email: flexistudyng@outlook.com | 
-                    WhatsApp: <a href="https://wa.link/2urv0k" target="_blank" class="text-accent-teal hover:underline">https://wa.link/2urv0k</a>
-                </p>
+    <!-- Footer -->
+    <footer class="bg-primary text-gray-400 py-16 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-2">
+                    <div class="flex items-center space-x-2 text-white mb-6">
+                        <div class="bg-secondary p-1.5 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                            </svg>
+                        </div>
+                        <span class="text-2xl font-bold tracking-tight">Flexi Study <span class="text-secondary">NG</span></span>
+                    </div>
+                    <p class="max-w-md leading-relaxed">Empowering Nigerians through flexible, technology-driven education. We are your dedicated support partner for admission into Miva Open University.</p>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold mb-6">Contact</h5>
+                    <ul class="space-y-4 text-sm">
+                        <li>Email: flexistudyng@outlook.com</li>
+                        <li>WhatsApp: <a href="https://wa.link/2urv0k" class="text-secondary hover:underline">+234 Advisor</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold mb-6">Quick Links</h5>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="#" class="referral-link hover:text-white transition">Apply Now</a></li>
+                        <li><a href="#" class="referral-link hover:text-white transition">Program List</a></li>
+                        <li><a href="https://wa.link/2urv0k" class="hover:text-white transition">Admission Help</a></li>
+                    </ul>
+                </div>
             </div>
-
-            <!-- MANDATORY COMPLIANCE DISCLAIMER --><div class="border-t border-gray-700 pt-4">
-                <p class="font-bold text-lg text-cta-red mb-2">IMPORTANT DISCLAIMER</p>
-                <p class="text-xs text-gray-400">
-                    Flexi Study NG is an independent educational guide and referral partner for Miva Open University. We are not the official website or a direct representative of Miva Open University. All official program details, policies, and tuition fees are set by Miva Open University and are subject to change. This page is designed to simplify your application process using our authorized partner link.
-                </p>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-xs">
+                <p class="mb-4">© 2025 Flexi Study NG. All rights reserved.</p>
+                <div class="max-w-3xl mx-auto bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <p class="font-bold text-accent mb-2 uppercase tracking-widest text-[10px]">Independent Referral Partner Disclaimer</p>
+                    <p class="leading-relaxed opacity-60">
+                        Flexi Study NG operates as an authorized independent referral and guidance partner for Miva Open University. We are not the official university administration. Admission decisions, tuition fees, and university policies are handled solely by Miva Open University. Use our link for expedited support and guidance.
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
